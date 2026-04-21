@@ -1,35 +1,57 @@
 [gd_scene format=3 uid="uid://dvbb8ppg1tf7h"]
 
+[ext_resource type="Script" uid="uid://c5d8d4pjjqc77" path="res://scripts/controls-scene/controls-scene.gd" id="1_5tddo"]
 [ext_resource type="FontFile" uid="uid://bttqv8528lowt" path="res://assets/fonts/Minecraft.ttf" id="1_i2gav"]
 
-[node name="Controls" type="Node2D" unique_id=998069846]
+[node name="Controls" type="Control" unique_id=1676817516]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_5tddo")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1927546152]
+layout_mode = 0
 offset_right = 640.0
 offset_bottom = 360.0
 color = Color(0.08647434, 0.31950718, 0.251068, 0.36078432)
 
 [node name="CenterContainer" type="CenterContainer" parent="ColorRect" unique_id=1701793269]
 layout_mode = 0
-offset_left = 160.0
-offset_top = 60.0
-offset_right = 480.0
-offset_bottom = 260.0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 214.0
+offset_bottom = 179.0
 
-[node name="PanelContainer" type="PanelContainer" parent="ColorRect/CenterContainer" unique_id=1769482183]
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/CenterContainer" unique_id=751944117]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="ColorRect/CenterContainer/PanelContainer" unique_id=751944117]
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer/MarginContainer" unique_id=1243167215]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer" unique_id=1243167215]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="ColorRect/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1982913114]
+[node name="TitleControls" type="Label" parent="ColorRect/CenterContainer/MarginContainer/VBoxContainer" unique_id=1982913114]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_i2gav")
-text = "CONTROLS: 
-WASD - Movement
-E - Pickup Weapon
-R - Reload
-F - Switch Weapon"
+theme_override_font_sizes/font_size = 24
+text = "CONTROLS: "
+
+[node name="Spacer" type="Control" parent="ColorRect/CenterContainer/MarginContainer/VBoxContainer" unique_id=1387552367]
+layout_mode = 2
+
+[node name="ActualControls" type="Label" parent="ColorRect/CenterContainer/MarginContainer/VBoxContainer" unique_id=1638768844]
+layout_mode = 2
+text = "     WASD - Movement
+     E - Pickup Weapon
+     R - Reload
+     F - Switch Weapon"
+
+[node name="CenterContainer2" type="CenterContainer" parent="ColorRect" unique_id=317088371]
+layout_mode = 0
+offset_left = 570.0
+offset_top = 20.0
+offset_right = 620.0
+offset_bottom = 51.0
+
+[node name="BackButton" type="Button" parent="ColorRect/CenterContainer2" unique_id=1947663021]
+layout_mode = 2
+text = "BACK"
+
+[connection signal="pressed" from="ColorRect/CenterContainer2/BackButton" to="." method="_on_back_button_pressed"]
