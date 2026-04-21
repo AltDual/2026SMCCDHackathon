@@ -3,7 +3,7 @@ extends Control
 const GAME_SCENE := "res://scenes/game.tscn"
 const CONTROLS_SCENE := "res://scenes/controls.tscn"
 
-@onready var start_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/StartButton
+@onready var start_button: Button = $CenterContainer/MarginContainer/VBoxContainer/StartButton
 
 func _ready() -> void:
 	start_button.grab_focus()
