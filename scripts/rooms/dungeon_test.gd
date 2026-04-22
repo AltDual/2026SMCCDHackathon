@@ -1,12 +1,18 @@
 extends Node
 
-const ROOM_PLACEHOLDER_SCENE := preload("res://scenes/room-placeholder.tscn")
+const ROOM_RUNTIME_SCENE := preload("res://scenes/room-runtime.tscn")
+const ROOM_TRANSITION_COOLDOWN := 0.35
+
 
 @onready var dungeon = $DungeonGenerator
-@onready var room_view: Control = $RoomView
+@onready var room_view: Node2D = $RoomView
 @onready var map_overlay = $MapOverlay
+@onready var player: CharacterBody2D = $Player
 
-var current_room_instance: Control
+var current_room_instance: Node2D
+var pending_entry_direction: Vector2i = Vector2i.ZERO
+var is_transitioning: bool = false
+var can_transition_rooms: bool = true
 
 func _ready() -> void:
 	map_overlay.set_dungeon(dungeon)
@@ -15,62 +21,80 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var current_room: RoomData = dungeon.get_current_room()
 
-	# Map toggle only when not in combat
 	if Input.is_action_just_pressed("toggle_map"):
 		if not current_room.doors_locked:
 			map_overlay.visible = not map_overlay.visible
 			map_overlay.refresh()
 
-	# Close map automatically if combat starts
 	if current_room.doors_locked and map_overlay.visible:
 		map_overlay.visible = false
 
-	# Debug clear key
 	if Input.is_action_just_pressed("ui_accept"):
 		if current_room.doors_locked and not current_room.cleared:
 			clear_current_room()
 			return
 
-	# Prevent movement while locked
-	if current_room.doors_locked:
-		return
-
-	# Optional: prevent movement while map is open
-	if map_overlay.visible:
-		return
-
-	var moved := false
-
-	if Input.is_action_just_pressed("ui_up"):
-		moved = dungeon.move_to_room(Vector2i.UP)
-	elif Input.is_action_just_pressed("ui_down"):
-		moved = dungeon.move_to_room(Vector2i.DOWN)
-	elif Input.is_action_just_pressed("ui_left"):
-		moved = dungeon.move_to_room(Vector2i.LEFT)
-	elif Input.is_action_just_pressed("ui_right"):
-		moved = dungeon.move_to_room(Vector2i.RIGHT)
-
-	if moved:
-		load_current_room()
-		map_overlay.refresh()
-
 func load_current_room() -> void:
 	if current_room_instance:
+		if current_room_instance.door_used.is_connected(_on_room_door_used):
+			current_room_instance.door_used.disconnect(_on_room_door_used)
+
 		current_room_instance.queue_free()
+		await get_tree().process_frame
 
 	var room: RoomData = dungeon.get_current_room()
 	room.visited = true
 
-	current_room_instance = ROOM_PLACEHOLDER_SCENE.instantiate()
+	current_room_instance = ROOM_RUNTIME_SCENE.instantiate()
 	room_view.add_child(current_room_instance)
-	current_room_instance.setup(room, dungeon.current_room_pos, dungeon)
+
+	current_room_instance.setup(
+		room,
+		dungeon.current_room_pos,
+		dungeon,
+		pending_entry_direction,
+		player
+	)
+
+	current_room_instance.door_used.connect(_on_room_door_used)
+
+	pending_entry_direction = Vector2i.ZERO
 
 	handle_room_enter(room)
 	map_overlay.refresh()
 
-func handle_room_enter(room: RoomData) -> void:
-	print("Entered room: ", dungeon.current_room_pos, " | type=", room.room_type)
+func _on_room_door_used(direction: Vector2i) -> void:
+	if is_transitioning:
+		return
 
+	if not can_transition_rooms:
+		return
+
+	is_transitioning = true
+	can_transition_rooms = false
+
+	var moved: bool = dungeon.move_to_room(direction)
+
+	if not moved:
+		is_transitioning = false
+		start_transition_cooldown()
+		return
+
+	pending_entry_direction = -direction
+	await load_current_room()
+
+	is_transitioning = false
+	start_transition_cooldown()
+
+func start_transition_cooldown() -> void:
+	var timer := get_tree().create_timer(ROOM_TRANSITION_COOLDOWN)
+	timer.timeout.connect(_end_transition_cooldown)
+
+func _end_transition_cooldown() -> void:
+	can_transition_rooms = true
+	#room_runtime.reenable_doors()
+
+func handle_room_enter(room: RoomData) -> void:
 	if room.room_type == "start":
 		room.doors_locked = false
 		room.enemies_spawned = false
@@ -97,8 +121,6 @@ func enter_combat_room(room: RoomData) -> void:
 	refresh_current_room()
 
 func enter_boss_room(room: RoomData) -> void:
-	print("BOSS ROOM ENTERED")
-
 	if not room.enemies_spawned:
 		room.enemies_spawned = true
 		print("Spawn boss here")
@@ -113,8 +135,6 @@ func clear_current_room() -> void:
 	room.cleared = true
 	room.doors_locked = false
 
-	print("Room cleared: ", dungeon.current_room_pos)
-
 	if room.room_type == "boss":
 		print("Boss defeated")
 
@@ -123,4 +143,4 @@ func clear_current_room() -> void:
 
 func refresh_current_room() -> void:
 	if current_room_instance:
-		current_room_instance.setup(dungeon.get_current_room(), dungeon.current_room_pos, dungeon)
+		current_room_instance.refresh()
