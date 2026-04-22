@@ -51,6 +51,7 @@ func play_animation(prefix: String, dir: Vector2) -> void:
 	else:
 		animated_sprite_2d.play(prefix + "_down")
 
+#Damage and XP
 func take_damage(amount: int):
 	current_health -= amount
 	# Emit the signal to tell the rest of the game the health changed
