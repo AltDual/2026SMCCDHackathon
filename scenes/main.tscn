@@ -1,8 +1,83 @@
 [gd_scene format=3 uid="uid://cpf1euhe00ms0"]
 
 [ext_resource type="PackedScene" uid="uid://bv3rl4xttiyii" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="Texture2D" uid="uid://cb6dow6faptvk" path="res://assets/images/Weapons/hotbar/ak67.png" id="2_0wfyh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sugp2"]
+bg_color = Color(0, 0, 0, 0.14509805)
 
 [node name="Main" type="Node2D" unique_id=1479449991]
 
 [node name="Player" parent="." unique_id=1252588381 instance=ExtResource("1_o5qli")]
 position = Vector2(325, 181)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1884463433]
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD" unique_id=1237822376]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TopLeft" type="VBoxContainer" parent="HUD/MarginContainer" unique_id=691177959]
+layout_mode = 2
+
+[node name="Healthbar" type="TextureProgressBar" parent="HUD/MarginContainer/TopLeft" unique_id=1110071656]
+layout_mode = 2
+
+[node name="XPbar" type="TextureProgressBar" parent="HUD/MarginContainer/TopLeft" unique_id=664746399]
+layout_mode = 2
+
+[node name="BottomRight" type="HBoxContainer" parent="HUD/MarginContainer" unique_id=497043902]
+layout_mode = 2
+
+[node name="AmmoText" type="Label" parent="HUD/MarginContainer/BottomRight" unique_id=2103483227]
+layout_mode = 2
+
+[node name="Hotbar" type="VBoxContainer" parent="HUD/MarginContainer/BottomRight" unique_id=580824290]
+layout_mode = 2
+alignment = 2
+
+[node name="Slot1" type="PanelContainer" parent="HUD/MarginContainer/BottomRight/Hotbar" unique_id=1107787355]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sugp2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot1" unique_id=884815054]
+layout_mode = 2
+
+[node name="Label" type="TextEdit" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot1/VBoxContainer" unique_id=1266497875]
+layout_mode = 2
+text = "[1]"
+
+[node name="WeaponIcon" type="TextureRect" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot1/VBoxContainer" unique_id=595863534]
+layout_mode = 2
+texture = ExtResource("2_0wfyh")
+stretch_mode = 2
+
+[node name="WeaponName" type="Label" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot1/VBoxContainer" unique_id=1105166262]
+layout_mode = 2
+text = "AK 67"
+
+[node name="Slot2" type="PanelContainer" parent="HUD/MarginContainer/BottomRight/Hotbar" unique_id=1470627810]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sugp2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot2" unique_id=1609407526]
+layout_mode = 2
+
+[node name="Label" type="TextEdit" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot2/VBoxContainer" unique_id=1728877276]
+layout_mode = 2
+text = "[1]"
+
+[node name="WeaponIcon" type="TextureRect" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot2/VBoxContainer" unique_id=1724246916]
+layout_mode = 2
+texture = ExtResource("2_0wfyh")
+
+[node name="WeaponName" type="Label" parent="HUD/MarginContainer/BottomRight/Hotbar/Slot2/VBoxContainer" unique_id=1949622782]
+layout_mode = 2
+text = "Fireball spell"
