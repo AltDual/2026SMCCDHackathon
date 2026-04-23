@@ -2,6 +2,7 @@ extends CanvasLayer
 
 @onready var health_bar = $MarginContainer/TopLeft/HPContainer/HealthBar
 @onready var xp_bar = $MarginContainer/TopLeft/XPContainer/XPBar
+@onready var level_label: Label = $MarginContainer/TopLeft/XPContainer/LevelLabel
 @onready var ammo_text: Label = $MarginContainer/BottomRight/AmmoText
 
 @onready var slot1_icon: TextureRect = $MarginContainer/BottomRight/Hotbar/Slot1/VBoxContainer/WeaponIcon
@@ -14,13 +15,18 @@ func _ready():
 	SignalBus.health_changed.connect(_on_health_changed)
 	SignalBus.xp_changed.connect(_on_xp_changed)
 	SignalBus.ammo_changed.connect(_on_ammo_changed)
-	
+	SignalBus.level_changed.connect(_on_level_changed)
 	SignalBus.hotbar_updated.connect(_on_hotbar_updated)
 
 func _on_health_changed(current_health: int, max_health: int):
 	health_bar.max_value = max_health
 	health_bar.value = current_health
-func _on_xp_changed(current_xp: int):
+func _on_level_changed(new_level: int) -> void:
+	print("HUD level_changed received: ", new_level)
+	level_label.text = "LVL " + str(new_level)
+func _on_xp_changed(current_xp: int, max_xp: int):
+	print("HUD xp_changed received: ", current_xp, " / ", max_xp)
+	xp_bar.max_value = max_xp
 	xp_bar.value = current_xp
 func _on_ammo_changed(current_ammo: int, reserve_ammo: int) -> void:
 	ammo_text.text = str(current_ammo) + " / " + str(reserve_ammo)

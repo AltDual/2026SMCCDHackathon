@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="UpgradeResource" format=3 uid="uid://dgm8xdalnvvby"]
+
+[ext_resource type="Script" uid="uid://74w1juyy5p24" path="res://resources/UpgradeResource.gd" id="1_eg4rx"]
+
+[resource]
+script = ExtResource("1_eg4rx")
+upgrade_name = "Health"
+description = "+10 health"
+value = 10.0
+metadata/_custom_type_script = "uid://74w1juyy5p24"

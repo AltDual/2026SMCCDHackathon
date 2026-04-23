@@ -117,7 +117,7 @@ func handle_room_enter(room: RoomData) -> void:
 func enter_combat_room(room: RoomData) -> void:
 	if not room.enemies_spawned:
 		room.enemies_spawned = true
-		spawn_enemies(room, 3)    # however many you want
+		spawn_enemies(room, 100)    # however many you want
 	room.doors_locked = true
 	map_overlay.visible = false
 	refresh_current_room()

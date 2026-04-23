@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://buni1gmmnooa4"]
+
+[ext_resource type="Script" uid="uid://cmlyato44yuif" path="res://scripts/Upgrades/upgrade_menu.gd" id="1_e3qxy"]
+
+[node name="UpgradeMenu" type="CanvasLayer" unique_id=172340655]
+process_mode = 3
+script = ExtResource("1_e3qxy")
+
+[node name="Panel" type="Panel" parent="." unique_id=2084315001]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=1221221545]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Card1" type="Button" parent="Panel/HBoxContainer" unique_id=1117143896]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/HBoxContainer/Card1" unique_id=1696740831]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Card1" unique_id=406501204]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Description" type="Label" parent="Panel/HBoxContainer/Card1" unique_id=1943166194]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Card2" type="Button" parent="Panel/HBoxContainer" unique_id=12477728]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/HBoxContainer/Card2" unique_id=1385760688]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Card2" unique_id=1943553537]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Description" type="Label" parent="Panel/HBoxContainer/Card2" unique_id=553473013]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Card3" type="Button" parent="Panel/HBoxContainer" unique_id=308673875]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/HBoxContainer/Card3" unique_id=1410073797]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Card3" unique_id=181317258]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Description" type="Label" parent="Panel/HBoxContainer/Card3" unique_id=391601315]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

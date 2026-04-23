@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bhferghnkd6qb"]
+[gd_scene format=3 uid="uid://cnacq424ym4ph"]
 
 [ext_resource type="Texture2D" uid="uid://cb6dow6faptvk" path="res://assets/images/Weapons/hotbar/ak67.png" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://ddx2uwg1ela48" path="res://scenes/HUDSignalListener.gd" id="1_oo0fn"]
@@ -71,11 +71,11 @@ texture_progress = SubResource("GradientTexture1D_tefeu")
 [node name="XPContainer" type="HBoxContainer" parent="MarginContainer/TopLeft" unique_id=1128314097]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/TopLeft/XPContainer" unique_id=1945683993]
+[node name="LevelLabel" type="Label" parent="MarginContainer/TopLeft/XPContainer" unique_id=1945683993]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontVariation_5ysmq")
 theme_override_font_sizes/font_size = 8
-text = "XP"
+text = "LVL 1"
 
 [node name="XPBar" type="TextureProgressBar" parent="MarginContainer/TopLeft/XPContainer" unique_id=899470959]
 custom_minimum_size = Vector2(150, 4)
