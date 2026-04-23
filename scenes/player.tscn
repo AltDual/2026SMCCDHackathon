@@ -422,12 +422,13 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qhqgy"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dqkch"]
 radius = 1.75
-height = 8.0
+height = 7.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1252588381]
 scale = Vector2(4, 4)
+collision_layer = 2
 script = ExtResource("1_g2els")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1717828801]
@@ -439,9 +440,9 @@ frame_progress = 0.39947474
 [node name="Gun" parent="." unique_id=1679620526 instance=ExtResource("3_qhqgy")]
 position = Vector2(3.25, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1185981517]
-position = Vector2(0.25, -1.5)
-shape = SubResource("CapsuleShape2D_qhqgy")
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1837531102]
 script = ExtResource("4_dqkch")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=824598718]
+position = Vector2(0.25, -1)
+shape = SubResource("CapsuleShape2D_dqkch")
