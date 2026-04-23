@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeResource" format=3 uid="uid://dgm8xdalnvvby"]
+
+[ext_resource type="Script" uid="uid://74w1juyy5p24" path="res://resources/UpgradeResource.gd" id="1_eg4rx"]
+[ext_resource type="Texture2D" uid="uid://ddeu8hpvgtefu" path="res://assets/images/Upgrades/fa1042.png" id="1_jj74u"]
+
+[resource]
+script = ExtResource("1_eg4rx")
+upgrade_name = "Health"
+description = "+10 health"
+icon = ExtResource("1_jj74u")
+value = 10.0
+metadata/_custom_type_script = "uid://74w1juyy5p24"

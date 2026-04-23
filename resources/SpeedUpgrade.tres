@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeResource" format=3 uid="uid://bvy68wqchh5ye"]
+
+[ext_resource type="Texture2D" uid="uid://bdtpduvi521yw" path="res://assets/images/Upgrades/fa1056.png" id="1_5pqud"]
+[ext_resource type="Script" uid="uid://74w1juyy5p24" path="res://resources/UpgradeResource.gd" id="1_f5btm"]
+
+[resource]
+script = ExtResource("1_f5btm")
+upgrade_name = "Speed Upgrade"
+description = "x1.2 speed"
+icon = ExtResource("1_5pqud")
+value = 0.2
+metadata/_custom_type_script = "uid://74w1juyy5p24"

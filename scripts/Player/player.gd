@@ -5,6 +5,10 @@ const SPEED = 150.0
 #var last_direction: Vector2 = Vector2.RIGHT
 #var movement_locked: bool = false
 #var require_input_release: bool = false
+const HEALTH_UPGRADE = preload("uid://dgm8xdalnvvby")
+const DAMAGE_UPGRADE = preload("uid://hs6vyxu4bfep")
+const SPEED_UPGRADE = preload("uid://bvy68wqchh5ye")
+
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var gun = $Gun
@@ -14,6 +18,14 @@ var reload_tween: Tween
 var max_health: int = 100
 var current_health: int = 100
 var current_xp: int = 0
+var current_level: int = 1
+var xp_thresholds: Array[int] = [100, 250, 500, 900, 1400, 2000]
+var is_dead: bool = false
+@onready var upgrade_menu = $UpgradeMenu
+var bonus_damage: int = 0
+var speed_multiplier: float = 1.0
+var upgrade_pool: Array[UpgradeResource] = [HEALTH_UPGRADE, DAMAGE_UPGRADE, SPEED_UPGRADE]
+
 
 # --- WEAPON INVENTORY SYSTEM ---
 @export var starting_weapons: Array[WeaponResource] = [null, null]
@@ -21,14 +33,14 @@ var weapon_inventory: Array[WeaponResource] = [null, null]
 var active_weapon_index: int = 0
 
 func _ready():
+	add_to_group("player")
 	SignalBus.health_changed.emit(current_health, max_health)
-	SignalBus.xp_changed.emit(current_xp)
+	SignalBus.xp_changed.emit(current_xp, xp_thresholds[0])
 	
 	# --- NEW: Connect to the gun's reload signals ---
 	gun.reload_started.connect(_on_gun_reload_started)
 	gun.reload_finished.connect(_on_gun_reload_finished)
 	
-	# --- CHANGED: Safely duplicate the actual resources, not just the array ---
 	for i in range(starting_weapons.size()):
 		if starting_weapons[i] != null:
 			weapon_inventory[i] = starting_weapons[i].duplicate()
@@ -37,23 +49,11 @@ func _ready():
 		equip_weapon(0)
 		
 	SignalBus.hotbar_updated.emit.call_deferred(weapon_inventory, active_weapon_index)
+	upgrade_menu.upgrade_chosen.connect(_apply_upgrade)
+	SignalBus.level_changed.connect(_on_level_up)
 
 func _physics_process(_delta: float) -> void:
 	var _move_input := Input.get_vector("left", "right", "up", "down")
-
-	#if require_input_release:
-		#if move_input == Vector2.ZERO:
-			#require_input_release = false
-		#else:
-			#velocity = Vector2.ZERO
-			#move_and_slide()
-			#return
-
-	#if movement_locked:
-		#velocity = Vector2.ZERO
-		#move_and_slide()
-		#return
-
 	process_movement()
 
 	var aim_dir = get_aim_direction()
@@ -84,7 +84,7 @@ func process_movement() -> void:
 	var direction := Input.get_vector("left", "right", "up", "down")
 
 	if direction != Vector2.ZERO:
-		velocity = direction * SPEED
+		velocity = direction * SPEED * speed_multiplier
 		#last_direction = direction
 	else:
 		velocity = Vector2.ZERO
@@ -104,15 +104,84 @@ func play_animation(prefix: String, dir: Vector2) -> void:
 	else:
 		animated_sprite_2d.play(prefix + "_down")
 
-#Damage and XP
+#Damage
 func take_damage(amount: int):
-	current_health -= amount
-	# Emit the signal to tell the rest of the game the health changed
+	if is_dead:
+		return
+	current_health = max(0, current_health - amount)
 	SignalBus.health_changed.emit(current_health, max_health)
+	if current_health == 0:
+		_die()
 
+func _die() -> void:
+	is_dead = true
+	set_physics_process(false)  # stop movement
+	gun.can_fire = false         # stop shooting
+
+	if animated_sprite_2d.sprite_frames.has_animation("dying"):
+		animated_sprite_2d.play("dying")
+		await animated_sprite_2d.animation_finished
+
+	#get_tree().change_scene_to_file("res://scenes/game_over.tscn")
+
+#XP
 func gain_xp(amount: int):
 	current_xp += amount
-	SignalBus.xp_changed.emit(current_xp)
+	var threshold_index = current_level - 1
+	var cap = xp_thresholds[threshold_index] if threshold_index < xp_thresholds.size() else 9999
+	print("XP gained: ", current_xp, " / ", cap, " level: ", current_level)
+	SignalBus.xp_changed.emit(current_xp, cap)
+	_check_level_up()
+
+
+func _check_level_up() -> void:
+	var threshold_index = current_level - 1
+	if threshold_index >= xp_thresholds.size():
+		return  # max level reached
+	if current_xp >= xp_thresholds[threshold_index]:
+		current_xp -= xp_thresholds[threshold_index]
+		current_level += 1
+		print("Leveled up to: ", current_level)
+		SignalBus.level_changed.emit(current_level)
+		SignalBus.xp_changed.emit(current_xp, xp_thresholds[current_level - 1])
+
+func _on_level_up(_level: int) -> void:
+	var offered = _pick_random_upgrades(3)
+	upgrade_menu.show_upgrades(offered)
+
+func _pick_random_upgrades(count: int) -> Array[UpgradeResource]:
+	var pool = upgrade_pool.duplicate()
+	pool.shuffle()
+	return pool.slice(0, count)
+
+func _apply_upgrade(upgrade: UpgradeResource) -> void:
+	match upgrade.type:
+		UpgradeResource.UpgradeType.MAX_HEALTH:
+			max_health += int(upgrade.value)
+			current_health = min(current_health + int(upgrade.value), max_health)
+			SignalBus.health_changed.emit(current_health, max_health)
+
+		UpgradeResource.UpgradeType.SPEED:
+			speed_multiplier += upgrade.value  # e.g. 0.2 = +20% speed
+
+		UpgradeResource.UpgradeType.DAMAGE:
+			bonus_damage += int(upgrade.value)
+
+		UpgradeResource.UpgradeType.FIRE_RATE:
+			if gun.weapon_data:
+				gun.weapon_data.fire_rate = max(0.05, gun.weapon_data.fire_rate - upgrade.value)
+
+		UpgradeResource.UpgradeType.BULLET_SPEED:
+			if gun.weapon_data:
+				gun.weapon_data.bullet_speed += upgrade.value
+
+		UpgradeResource.UpgradeType.PIERCING:
+			if gun.weapon_data:
+				gun.weapon_data.piercing = true
+
+		UpgradeResource.UpgradeType.PELLET_COUNT:
+			if gun.weapon_data:
+				gun.weapon_data.pellet_count += int(upgrade.value)
 
 func _on_gun_reload_started(duration: float) -> void:
 	reload_bar.visible = true

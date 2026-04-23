@@ -12,6 +12,7 @@ extends CharacterBody2D
 @export var fire_rate: float = 1.5        # seconds between shots
 @export var preferred_range: float = 200.0  # tries to stay this far away
 @export var detection_range: float = 350.0  # must match DetectionArea radius
+@export var xp_gain: int = 20
  
 # ---------------------------------------------------------------------------
 # Scene refs  (update paths if your nodes are named differently)
@@ -129,7 +130,9 @@ func take_damage(amount: int) -> void:
 		_die()
  
 func _die() -> void:
-	# Drop loot, emit signal, play death anim — stub for now
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.gain_xp(xp_gain)
 	queue_free()
  
 # ---------------------------------------------------------------------------

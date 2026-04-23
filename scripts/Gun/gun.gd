@@ -133,6 +133,6 @@ func spawn_bullet(angle: float) -> void:
 
 	bullet.global_position = muzzle.global_position
 	bullet.rotation = angle
-
-	# Optional if you implement it
-	bullet.setup(weapon_data.damage, weapon_data.bullet_speed, weapon_data.bullet_range)
+	
+	var bonus = get_parent().bonus_damage if get_parent().has_method("take_damage") else 0
+	bullet.setup(weapon_data.damage + bonus, weapon_data.bullet_speed, weapon_data.bullet_range)
