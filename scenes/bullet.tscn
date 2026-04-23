@@ -67,9 +67,15 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="Bullet" type="Node2D" unique_id=476956018]
+[sub_resource type="CircleShape2D" id="CircleShape2D_y25gk"]
+radius = 4.1231055
+
+[node name="Bullet" type="Area2D" unique_id=1174199858]
 script = ExtResource("1_mkf8s")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471414523]
 sprite_frames = SubResource("SpriteFrames_s437g")
 frame_progress = 0.14770795
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1916146343]
+shape = SubResource("CircleShape2D_y25gk")
