@@ -13,6 +13,7 @@ var current_xp: int = 0
 
 func _ready():
 	# Initialize the UI when the player spawns
+	add_to_group("player")
 	SignalBus.health_changed.emit(current_health, max_health)
 	SignalBus.xp_changed.emit(current_xp)
 
