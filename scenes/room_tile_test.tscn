@@ -201,6 +201,10 @@ position = Vector2(25, 368)
 [node name="SpawnFromRight" type="Marker2D" parent="." unique_id=1768691945]
 position = Vector2(1255, 368)
 
+<<<<<<< Updated upstream
 [node name="DebugLabel" type="Label" parent="." unique_id=1279772453]
+=======
+[node name="DebugLabel" type="Label" parent="." unique_id=1183668655]
+>>>>>>> Stashed changes
 offset_right = 40.0
 offset_bottom = 23.0
