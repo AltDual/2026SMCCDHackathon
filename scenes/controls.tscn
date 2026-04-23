@@ -38,6 +38,7 @@ layout_mode = 2
 
 [node name="ActualControls" type="Label" parent="ColorRect/CenterContainer/MarginContainer/VBoxContainer" unique_id=1638768844]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("1_i2gav")
 text = "     WASD - Movement
      E - Pickup Weapon
      R - Reload
@@ -52,6 +53,7 @@ offset_bottom = 51.0
 
 [node name="BackButton" type="Button" parent="ColorRect/CenterContainer2" unique_id=1947663021]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("1_i2gav")
 text = "BACK"
 
 [connection signal="pressed" from="ColorRect/CenterContainer2/BackButton" to="." method="_on_back_button_pressed"]
