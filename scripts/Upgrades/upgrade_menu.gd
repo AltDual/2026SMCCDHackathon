@@ -18,11 +18,11 @@ func show_upgrades(upgrades: Array[UpgradeResource]) -> void:
 	for i in range(cards.size()):
 		var card = cards[i]
 		var upgrade = upgrades[i]
-		# Update card UI — adjust node paths to match your scene
-		card.get_node("Label").text = upgrade.upgrade_name
-		card.get_node("Description").text = upgrade.description
+		var vbox = card.get_node("VBoxContainer")
+		vbox.get_node("Label").text = upgrade.upgrade_name
+		vbox.get_node("Description").text = upgrade.description
 		if upgrade.icon:
-			card.get_node("Icon").texture = upgrade.icon
+			vbox.get_node("Icon").texture = upgrade.icon
 		card.pressed.connect(_on_card_pressed.bind(i), CONNECT_ONE_SHOT)
 	visible = true
 	get_tree().paused = true
