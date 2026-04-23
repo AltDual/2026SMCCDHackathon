@@ -153,6 +153,7 @@ color = Color(0.21568628, 0.40784314, 0.4, 0.7647059)
 
 [node name="DoorUp" type="Area2D" parent="." unique_id=1517926988]
 position = Vector2(640, 0)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorUp" unique_id=1184720000]
 position = Vector2(0, -29)
@@ -162,6 +163,7 @@ shape = SubResource("SegmentShape2D_d0uwt")
 
 [node name="DoorDown" type="Area2D" parent="." unique_id=1856199985]
 position = Vector2(640, 720)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorDown" unique_id=313892153]
 position = Vector2(0, 21)
@@ -171,6 +173,7 @@ shape = SubResource("SegmentShape2D_srmk2")
 
 [node name="DoorLeft" type="Area2D" parent="." unique_id=1608305696]
 position = Vector2(0, 368)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorLeft" unique_id=1167842624]
 position = Vector2(-10, 0)
@@ -180,6 +183,7 @@ shape = SubResource("SegmentShape2D_1k5iw")
 
 [node name="DoorRight" type="Area2D" parent="." unique_id=127710728]
 position = Vector2(1280, 368)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorRight" unique_id=1270763061]
 position = Vector2(10, 0)
