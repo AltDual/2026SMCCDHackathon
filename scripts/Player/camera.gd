@@ -8,7 +8,7 @@ func _ready() -> void:
 	top_level = true
 	make_current()
 	zoom = Vector2.ONE
-	position_smoothing_enabled = true
+	position_smoothing_enabled = false
 	position_smoothing_speed = CAMERA_SMOOTH_SPEED
 	drag_horizontal_enabled = false
 	drag_vertical_enabled = false
