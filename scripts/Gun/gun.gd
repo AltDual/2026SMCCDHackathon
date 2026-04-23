@@ -1,15 +1,21 @@
 extends Node2D
 
 signal weapon_switched(weapon: WeaponResource)
-@export var weapon_data: WeaponResource
+signal ammo_changed(current: int, max: int) # Useful for your Ammo HUD later
 
+@export var weapon_data: WeaponResource
 const BULLET = preload("res://scenes/bullet.tscn")
 @onready var muzzle: Marker2D = $Marker2D
+@onready var sprite: Sprite2D = $Sprite2D
 
 var can_fire: bool = true
+var is_reloading: bool = false
+var current_ammo: int = 0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	if weapon_data == null: return
+	
 	look_at(get_global_mouse_position())
 	
 	rotation_degrees = wrap(rotation_degrees, 0, 360)
@@ -20,16 +26,41 @@ func _process(_delta: float) -> void:
 	
 	var fire_input = Input.is_action_just_pressed("shoot") if not weapon_data.is_automatic else Input.is_action_pressed("shoot")
 	
-	if fire_input and can_fire:
-		fire()
+	# Handle Reload Input
+	if Input.is_action_just_pressed("reload") and current_ammo < weapon_data.mag_size and not is_reloading:
+		reload()
 	
-func _load_weapon(data: WeaponResource) -> void:
+	# Handle Firing
+	if fire_input and can_fire and not is_reloading:
+		if current_ammo > 0:
+			fire()
+		else:
+			reload() # Auto-reload when empty (optional, but feels good)
+
+func equip(data: WeaponResource) -> void:
 	weapon_data = data
+	is_reloading = false
 	can_fire = true
-	weapon_switched.emit(weapon_data)
+	# Give full ammo on initial pickup, or you can track ammo per inventory slot later
+	current_ammo = weapon_data.mag_size 
+	# --- NEW: Update the visual sprite to match the weapon data ---
+	if sprite and weapon_data.weapon_sprite_side:
+		sprite.texture = weapon_data.weapon_sprite_side
+	SignalBus.ammo_changed.emit.call_deferred(current_ammo, weapon_data.mag_size)
+
+func reload() -> void:
+	is_reloading = true
+	# Simulate reload time
+	await get_tree().create_timer(weapon_data.reload_time).timeout
+	
+	current_ammo = weapon_data.mag_size
+	is_reloading = false
+	SignalBus.ammo_changed.emit.call_deferred(current_ammo, weapon_data.mag_size)
 
 func fire() -> void:
 	can_fire = false
+	current_ammo -= 1
+	SignalBus.ammo_changed.emit.call_deferred(current_ammo, weapon_data.mag_size)
 	
 	match weapon_data.pattern:
 		"single":
@@ -72,6 +103,3 @@ func spawn_bullet(angle: float) -> void:
 
 	# Optional if you implement it
 	bullet.setup(weapon_data.damage, weapon_data.bullet_speed, weapon_data.bullet_range)
-
-func equip(data: WeaponResource) -> void:
-	_load_weapon(data)
