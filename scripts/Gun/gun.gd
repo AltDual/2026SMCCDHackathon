@@ -1,19 +1,23 @@
 extends Node2D
 
 signal weapon_switched(weapon: WeaponResource)
-signal ammo_changed(current: int, max: int) # Useful for your Ammo HUD later
+signal reload_started(duration: float)
+signal reload_finished()
 
 @export var weapon_data: WeaponResource
 const BULLET = preload("res://scenes/bullet.tscn")
+
 @onready var muzzle: Marker2D = $Marker2D
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var sprite: Sprite2D = $Sprite2D 
 
 var can_fire: bool = true
 var is_reloading: bool = false
 var current_ammo: int = 0
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
+# --- NEW: Replaces the buggy 'await' timer ---
+var fire_cooldown: float = 0.0 
+
+func _process(delta: float) -> void:
 	if weapon_data == null: return
 	
 	look_at(get_global_mouse_position())
@@ -23,44 +27,76 @@ func _process(_delta: float) -> void:
 		scale.y = -1
 	else:
 		scale.y = 1
+		
+	# --- NEW: Process the weapon cooldown safely every frame ---
+	if fire_cooldown > 0.0:
+		fire_cooldown -= delta
+		can_fire = false
+	else:
+		can_fire = true
 	
 	var fire_input = Input.is_action_just_pressed("shoot") if not weapon_data.is_automatic else Input.is_action_pressed("shoot")
 	
-	# Handle Reload Input
 	if Input.is_action_just_pressed("reload") and current_ammo < weapon_data.mag_size and not is_reloading:
 		reload()
 	
-	# Handle Firing
 	if fire_input and can_fire and not is_reloading:
 		if current_ammo > 0:
 			fire()
 		else:
-			reload() # Auto-reload when empty (optional, but feels good)
+			reload()
 
 func equip(data: WeaponResource) -> void:
+	# --- NEW: Cancel the reload bar if we swap weapons mid-reload ---
+	if is_reloading:
+		reload_finished.emit()
+		
+	# 1. Save the ammo of the OLD weapon before swapping
+	if weapon_data != null:
+		weapon_data.current_ammo = current_ammo
+		
+	# 2. Load the new weapon
 	weapon_data = data
 	is_reloading = false
-	can_fire = true
-	# Give full ammo on initial pickup, or you can track ammo per inventory slot later
-	current_ammo = weapon_data.mag_size 
-	# --- NEW: Update the visual sprite to match the weapon data ---
+	
+	# 3. Add a swap delay (This stops the burst bug AND acts as your "equip time" mechanic!)
+	fire_cooldown = 0.25 
+	
+	# 4. Load the saved ammo, or give max ammo if it is a fresh pickup
+	if weapon_data.current_ammo == -1:
+		current_ammo = weapon_data.mag_size
+		weapon_data.current_ammo = current_ammo
+	else:
+		current_ammo = weapon_data.current_ammo
+	
 	if sprite and weapon_data.weapon_sprite_side:
 		sprite.texture = weapon_data.weapon_sprite_side
+		
 	SignalBus.ammo_changed.emit.call_deferred(current_ammo, weapon_data.mag_size)
+	weapon_switched.emit(weapon_data)
 
 func reload() -> void:
 	is_reloading = true
-	# Simulate reload time
+	var reloading_weapon = weapon_data # Keep track of what we are reloading
+	
+	reload_started.emit(weapon_data.reload_time)
 	await get_tree().create_timer(weapon_data.reload_time).timeout
 	
-	current_ammo = weapon_data.mag_size
-	is_reloading = false
-	SignalBus.ammo_changed.emit.call_deferred(current_ammo, weapon_data.mag_size)
+	# Only finish the reload if we are still holding the same gun!
+	if is_reloading and weapon_data == reloading_weapon:
+		current_ammo = weapon_data.mag_size
+		weapon_data.current_ammo = current_ammo
+		is_reloading = false
+		SignalBus.ammo_changed.emit(current_ammo, weapon_data.mag_size)
+		# --- NEW: Tell the player to hide the bar ---
+		reload_finished.emit()
 
 func fire() -> void:
-	can_fire = false
+	# --- CHANGED: Start the cooldown manually ---
+	fire_cooldown = weapon_data.fire_rate
 	current_ammo -= 1
-	SignalBus.ammo_changed.emit.call_deferred(current_ammo, weapon_data.mag_size)
+	
+	SignalBus.ammo_changed.emit(current_ammo, weapon_data.mag_size)
 	
 	match weapon_data.pattern:
 		"single":
@@ -69,9 +105,6 @@ func fire() -> void:
 			fire_spread()
 		"circle":
 			fire_circle()
-
-	await get_tree().create_timer(weapon_data.fire_rate).timeout
-	can_fire = true
 
 func fire_single() -> void:
 	spawn_bullet(rotation)

@@ -4,6 +4,10 @@
 [ext_resource type="Script" uid="uid://ddx2uwg1ela48" path="res://scenes/HUDSignalListener.gd" id="1_oo0fn"]
 [ext_resource type="FontFile" uid="uid://bttqv8528lowt" path="res://assets/fonts/Minecraft.ttf" id="2_5ysmq"]
 
+[sub_resource type="FontVariation" id="FontVariation_5ysmq"]
+base_font = ExtResource("2_5ysmq")
+spacing_glyph = 1
+
 [sub_resource type="Gradient" id="Gradient_sugp2"]
 colors = PackedColorArray(0.30692267, 0.3069227, 0.3069227, 1, 0.15127608, 0.15127608, 0.15127608, 1)
 
@@ -45,17 +49,39 @@ theme_override_constants/margin_bottom = 10
 [node name="TopLeft" type="VBoxContainer" parent="MarginContainer" unique_id=1870982064]
 layout_mode = 2
 
-[node name="HealthBar" type="TextureProgressBar" parent="MarginContainer/TopLeft" unique_id=208116315]
-custom_minimum_size = Vector2(0, 4)
+[node name="HPContainer" type="HBoxContainer" parent="MarginContainer/TopLeft" unique_id=1503453835]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/TopLeft/HPContainer" unique_id=1867573154]
+layout_mode = 2
+theme_override_fonts/font = SubResource("FontVariation_5ysmq")
+theme_override_font_sizes/font_size = 8
+text = "HP"
+
+[node name="HealthBar" type="TextureProgressBar" parent="MarginContainer/TopLeft/HPContainer" unique_id=208116315]
+custom_minimum_size = Vector2(150, 4)
+layout_mode = 2
+size_flags_horizontal = 0
 value = 100.0
+rounded = true
 nine_patch_stretch = true
 texture_under = SubResource("GradientTexture1D_jyhfs")
 texture_progress = SubResource("GradientTexture1D_tefeu")
 
-[node name="XPBar" type="TextureProgressBar" parent="MarginContainer/TopLeft" unique_id=899470959]
-custom_minimum_size = Vector2(0, 4)
+[node name="XPContainer" type="HBoxContainer" parent="MarginContainer/TopLeft" unique_id=1128314097]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/TopLeft/XPContainer" unique_id=1945683993]
+layout_mode = 2
+theme_override_fonts/font = SubResource("FontVariation_5ysmq")
+theme_override_font_sizes/font_size = 8
+text = "XP"
+
+[node name="XPBar" type="TextureProgressBar" parent="MarginContainer/TopLeft/XPContainer" unique_id=899470959]
+custom_minimum_size = Vector2(150, 4)
+layout_mode = 2
+size_flags_horizontal = 0
+rounded = true
 nine_patch_stretch = true
 texture_under = SubResource("GradientTexture1D_o6xl0")
 texture_progress = SubResource("GradientTexture1D_5ysmq")

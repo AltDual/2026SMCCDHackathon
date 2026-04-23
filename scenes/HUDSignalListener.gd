@@ -1,7 +1,7 @@
 extends CanvasLayer
 
-@onready var health_bar = $MarginContainer/TopLeft/HealthBar
-@onready var xp_bar = $MarginContainer/TopLeft/XPBar
+@onready var health_bar = $MarginContainer/TopLeft/HPContainer/HealthBar
+@onready var xp_bar = $MarginContainer/TopLeft/XPContainer/XPBar
 @onready var ammo_text: Label = $MarginContainer/BottomRight/AmmoText
 
 @onready var slot1_icon: TextureRect = $MarginContainer/BottomRight/Hotbar/Slot1/VBoxContainer/WeaponIcon
