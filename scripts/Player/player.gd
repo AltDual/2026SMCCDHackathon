@@ -8,6 +8,8 @@ const SPEED = 150.0
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var gun = $Gun
+@onready var reload_bar: ProgressBar = $ReloadBar
+var reload_tween: Tween
 
 var max_health: int = 100
 var current_health: int = 100
@@ -19,17 +21,21 @@ var weapon_inventory: Array[WeaponResource] = [null, null]
 var active_weapon_index: int = 0
 
 func _ready():
-	# Initialize the UI when the player spawns
-	add_to_group("player")
 	SignalBus.health_changed.emit(current_health, max_health)
 	SignalBus.xp_changed.emit(current_xp)
 	
-	# Load starting weapons into inventory
-	weapon_inventory = starting_weapons.duplicate()
+	# --- NEW: Connect to the gun's reload signals ---
+	gun.reload_started.connect(_on_gun_reload_started)
+	gun.reload_finished.connect(_on_gun_reload_finished)
+	
+	# --- CHANGED: Safely duplicate the actual resources, not just the array ---
+	for i in range(starting_weapons.size()):
+		if starting_weapons[i] != null:
+			weapon_inventory[i] = starting_weapons[i].duplicate()
+			
 	if weapon_inventory[0] != null:
 		equip_weapon(0)
 		
-	# --- CHANGED: Use call_deferred to wait for the HUD to be ready ---
 	SignalBus.hotbar_updated.emit.call_deferred(weapon_inventory, active_weapon_index)
 
 func _physics_process(_delta: float) -> void:
@@ -107,3 +113,21 @@ func take_damage(amount: int):
 func gain_xp(amount: int):
 	current_xp += amount
 	SignalBus.xp_changed.emit(current_xp)
+
+func _on_gun_reload_started(duration: float) -> void:
+	reload_bar.visible = true
+	reload_bar.max_value = duration
+	reload_bar.value = 0.0
+
+	# Kill the old animation if one is somehow still running
+	if reload_tween:
+		reload_tween.kill()
+
+	# Create a smooth animation from 0 to the reload time
+	reload_tween = create_tween()
+	reload_tween.tween_property(reload_bar, "value", duration, duration)
+
+func _on_gun_reload_finished() -> void:
+	reload_bar.visible = false
+	if reload_tween:
+		reload_tween.kill()

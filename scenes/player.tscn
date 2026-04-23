@@ -5,8 +5,8 @@
 [ext_resource type="Script" uid="uid://ex5br4mqe7f1" path="res://resources/WeaponResource.gd" id="2_tuyoq"]
 [ext_resource type="Resource" uid="uid://ck6ojmknptdwo" path="res://scripts/Gun/weapontypes/pistol.tres" id="3_fjrip"]
 [ext_resource type="PackedScene" uid="uid://tbfwl67iermv" path="res://scenes/gun.tscn" id="3_qhqgy"]
-[ext_resource type="Resource" uid="uid://dylyk7mswy54q" path="res://scripts/Gun/weapontypes/ak67.tres" id="4_smehm"]
 [ext_resource type="Script" uid="uid://dpn5181crkhhd" path="res://scripts/Player/camera.gd" id="4_dqkch"]
+[ext_resource type="Resource" uid="uid://dylyk7mswy54q" path="res://scripts/Gun/weapontypes/ak67.tres" id="4_smehm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("1_3vyb7")
@@ -429,6 +429,12 @@ animations = [{
 radius = 1.75
 height = 7.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_smehm"]
+bg_color = Color(0.6, 0.6, 0.6, 0.33333334)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjrip"]
+bg_color = Color(1, 1, 1, 0.5764706)
+
 [node name="Player" type="CharacterBody2D" unique_id=1252588381]
 scale = Vector2(4, 4)
 collision_layer = 2
@@ -446,6 +452,16 @@ position = Vector2(3.25, 0)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1837531102]
 script = ExtResource("4_dqkch")
+
+[node name="ReloadBar" type="ProgressBar" parent="." unique_id=1580870700]
+visible = false
+offset_left = -4.0
+offset_top = 7.0
+offset_right = 4.0
+offset_bottom = 8.0
+theme_override_styles/background = SubResource("StyleBoxFlat_smehm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_fjrip")
+show_percentage = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=824598718]
 position = Vector2(0.25, -1)

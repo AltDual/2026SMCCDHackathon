@@ -16,3 +16,5 @@ extends Resource
 @export var is_automatic: bool = false
 
 @export var weapon_sprite_side: Texture2D
+
+var current_ammo: int = -1
