@@ -16,7 +16,6 @@ func setup(p_damage: int, p_speed: float, p_range: float) -> void:
 	body_entered.connect(_on_body_entered)
 	print("Bullet spawned, mask: ", collision_mask)
 
-# (Removed the _ready function completely)
 
 func _process(delta: float) -> void:
 	# Using global_position here is safer when working with Area2D nodes
