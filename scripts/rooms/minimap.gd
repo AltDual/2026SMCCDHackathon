@@ -1,6 +1,7 @@
 extends Control
 
-@export var map_scale: float = 0.15 # Scales your 1280x720 room down to 192x108
+# Decreased from 0.15 to 0.12 to make the overall map smaller
+@export var map_scale: float = 0.12 
 @export var room_size := Vector2(1280, 720)
 
 var player: Node2D = null
@@ -35,7 +36,6 @@ func _draw() -> void:
 	draw_circle(map_player_pos, 4.0, Color.GREEN)
 
 	# 3. Draw the Enemies (Red Dots)
-	# This automatically grabs anything you put in the "enemies" group!
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
 		if is_instance_valid(enemy) and enemy.is_inside_tree():
@@ -44,4 +44,11 @@ func _draw() -> void:
 			
 			map_enemy_pos.x = clamp(map_enemy_pos.x, 0, scaled_room.size.x)
 			map_enemy_pos.y = clamp(map_enemy_pos.y, 0, scaled_room.size.y)
-			draw_circle(map_enemy_pos, 3.0, Color.RED)
+			
+			# Check if this specific enemy is the boss!
+			if enemy.is_in_group("boss"):
+				# Draw a larger (6.0), darker red dot for the boss
+				draw_circle(map_enemy_pos, 6.0, Color.DARK_RED)
+			else:
+				# Draw the standard (3.0) red dot for normal enemies
+				draw_circle(map_enemy_pos, 3.0, Color.RED)

@@ -43,8 +43,8 @@ layout_mode = 3
 anchors_preset = 0
 offset_left = 20.0
 offset_top = 40.0
-offset_right = 60.0
-offset_bottom = 80.0
+offset_right = 173.0
+offset_bottom = 126.0
 script = ExtResource("6_8lwq6")
 
 [node name="BossMusic" type="AudioStreamPlayer2D" parent="." unique_id=1405909221]
