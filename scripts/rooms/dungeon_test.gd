@@ -10,6 +10,7 @@ const BOSS_GOLEM = preload("res://scenes/not_so_sneak_golem.tscn")
 @onready var room_view: Node2D = $RoomView
 @onready var map_overlay = $MapCanvasLayer/MapOverlay
 @onready var player: CharacterBody2D = $Player
+@onready var boss_music: AudioStreamPlayer2D = $BossMusic
 #@onready var game_camera = $GameCamera
 
 var current_room_instance: Node2D
@@ -129,7 +130,7 @@ func enter_boss_room(room: RoomData) -> void:
 		room.enemies_spawned = true
 		enemies_alive = 0
 		spawn_boss()
-
+		boss_music.play()
 	room.doors_locked = true
 	map_overlay.visible = false
 	refresh_current_room()
@@ -143,6 +144,7 @@ func spawn_boss() -> void:
 	boss.tree_exited.connect(_on_boss_killed)
 
 func _on_boss_killed() -> void:
+	boss_music.stop()
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.queue_free()
 	clear_current_room()
