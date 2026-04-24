@@ -44,7 +44,7 @@ region = Rect2(128, 96, 32, 32)
 atlas = ExtResource("3_7w3vg")
 region = Rect2(160, 96, 32, 32)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_k8phd"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_7w3vg"]
 resource_local_to_scene = true
 animations = [{
 "frames": [{
@@ -88,14 +88,14 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1bp08"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_k8phd"]
 resource_local_to_scene = true
 radius = 8.0
 
 [node name="Elite_Slime_Enemy" unique_id=688229520 instance=ExtResource("1_g0nlc")]
 script = ExtResource("2_g0nlc")
 max_health = 300
-damage = 4
+damage = 3
 preferred_range = 300.0
 detection_range = 500.0
 xp_gain = 40
@@ -103,8 +103,8 @@ xp_gain = 40
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=2058940189]
 modulate = Color(0.64705884, 0.38039216, 1, 1)
 scale = Vector2(3, 3)
-sprite_frames = SubResource("SpriteFrames_k8phd")
+sprite_frames = SubResource("SpriteFrames_7w3vg")
 animation = &"idle"
 
 [node name="CollisionShape2D" parent="." index="3" unique_id=829269521]
-shape = SubResource("CircleShape2D_1bp08")
+shape = SubResource("CircleShape2D_k8phd")

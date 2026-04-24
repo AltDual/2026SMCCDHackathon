@@ -9,7 +9,7 @@ func on_ready() -> void:
 
 func _on_shoot() -> void:
 	# Shoot 3 bullets in a spread
-	for angle_offset in [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10]:
+	for angle_offset in [-10, -6, -2, 0, 2, 6, 10]:
 		var dir = (player.global_position - muzzle.global_position).normalized()
 		_spawn_bullet(dir.rotated(deg_to_rad(angle_offset)).angle())
 

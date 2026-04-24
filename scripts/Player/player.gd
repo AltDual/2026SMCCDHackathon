@@ -27,6 +27,15 @@ var bonus_damage: int = 0
 var speed_multiplier: float = 1.0
 var upgrade_pool: Array[UpgradeResource] = [HEALTH_UPGRADE, DAMAGE_UPGRADE, SPEED_UPGRADE]
 
+#For Dash
+@onready var dash_particles: GPUParticles2D = $GPUParticles2D
+const DASH_SPEED: float = 450.0
+const DASH_DURATION: float = 0.15
+const DASH_COOLDOWN: float = 0.8
+var is_dashing: bool = false
+var dash_cooldown_remaining: float = 0.0
+var is_invincible: bool = false  # i-frames flag
+
 
 # --- WEAPON INVENTORY SYSTEM ---
 @export var starting_weapons: Array[WeaponResource] = [null, null]
@@ -59,15 +68,23 @@ func _physics_process(_delta: float) -> void:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
-	var _move_input := Input.get_vector("left", "right", "up", "down")
-	process_movement()
+	
+	if dash_cooldown_remaining > 0.0:
+		dash_cooldown_remaining -= _delta
+	
+	if not is_dashing:
+		var _move_input := Input.get_vector("left", "right", "up", "down")
+		process_movement()
+		var aim_dir = get_aim_direction()
+		$Gun.position.x = sign(aim_dir.x) * 3.5
 
-	var aim_dir = get_aim_direction()
-	$Gun.position.x = sign(aim_dir.x) * 3.5
-
-	process_animation(aim_dir)
+		process_animation(aim_dir)
+		process_weapon_switching()
+		if Input.is_action_just_pressed("dash") and dash_cooldown_remaining <= 0.0:
+			_start_dash()
+			
 	move_and_slide()
-	process_weapon_switching()
+		
 
 # --- NEW METHODS ---
 func process_weapon_switching() -> void:
@@ -114,7 +131,7 @@ func play_animation(prefix: String, dir: Vector2) -> void:
 
 #Damage
 func take_damage(amount: int):
-	if is_dead:
+	if is_dead or is_invincible:
 		return
 	current_health = max(0, current_health - amount)
 	SignalBus.health_changed.emit(current_health, max_health)
@@ -258,3 +275,33 @@ func flash_damage() -> void:
 	
 	# Step 2: Fade it back to normal over 0.15 seconds
 	damage_tween.tween_property(animated_sprite_2d, "modulate", Color(1, 1, 1, 1), 0.15)
+
+#Dash
+func _start_dash() -> void:
+	var direction := Input.get_vector("left", "right", "up", "down")
+	# If no input, dash toward mouse instead
+	if direction == Vector2.ZERO:
+		direction = get_aim_direction()
+
+	is_dashing = true
+	is_invincible = true
+	dash_cooldown_remaining = DASH_COOLDOWN
+
+	# Particles
+	dash_particles.emitting = true
+	
+	# Override velocity for the dash
+	velocity = direction * DASH_SPEED
+	var tween = create_tween()
+	tween.tween_property(animated_sprite_2d, "modulate:a", 0.3, 0.05)
+
+	await get_tree().create_timer(DASH_DURATION).timeout
+	is_dashing = false
+
+	# Small i-frame window after dash ends
+	await get_tree().create_timer(0.2).timeout
+	is_invincible = false
+	dash_particles.emitting = false
+	
+	tween = create_tween()
+	tween.tween_property(animated_sprite_2d, "modulate:a", 1.0, 0.1)
