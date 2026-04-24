@@ -33,4 +33,4 @@ Due to the scalability of the weapon and enemy systems, it is easy to add more c
 ## How to Play
 - To view the controls they can be viewed from the main menu
 - Clear all the rooms (or not) and fight the boss to win!
-- Tip: Dash is very useful as it give i-frames
+- Tip: Dash is very useful as it gives i-frames
