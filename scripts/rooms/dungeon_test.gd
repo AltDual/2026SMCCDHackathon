@@ -33,10 +33,10 @@ func _process(_delta: float) -> void:
 	if current_room.doors_locked and map_overlay.visible:
 		map_overlay.visible = false
 
-	if Input.is_action_just_pressed("ui_accept"):
-		if current_room.doors_locked and not current_room.cleared:
-			clear_current_room()
-			return
+	#if Input.is_action_just_pressed("ui_accept"):
+	#	if current_room.doors_locked and not current_room.cleared:
+	#		clear_current_room()
+	#		return
 
 func load_current_room() -> void:
 	if current_room_instance:
@@ -118,6 +118,7 @@ func handle_room_enter(room: RoomData) -> void:
 func enter_combat_room(room: RoomData) -> void:
 	if not room.enemies_spawned:
 		room.enemies_spawned = true
+		enemies_alive = 0
 		spawn_enemies(room, 1)    # however many you want
 	room.doors_locked = true
 	map_overlay.visible = false
@@ -126,6 +127,7 @@ func enter_combat_room(room: RoomData) -> void:
 func enter_boss_room(room: RoomData) -> void:
 	if not room.enemies_spawned:
 		room.enemies_spawned = true
+		enemies_alive = 0
 		spawn_boss()
 
 	room.doors_locked = true
@@ -133,6 +135,7 @@ func enter_boss_room(room: RoomData) -> void:
 	refresh_current_room()
 
 func spawn_boss() -> void:
+	enemies_alive = 1
 	var boss = BOSS_GOLEM.instantiate()
 	current_room_instance.add_child(boss)
 	# Spawn in center of room, away from player
@@ -151,7 +154,7 @@ func clear_current_room() -> void:
 	room.doors_locked = false
 
 	if room.room_type == "boss":
-		print("Boss defeated")
+		_show_victory()
 
 	refresh_current_room()
 	map_overlay.refresh()
@@ -161,6 +164,7 @@ func refresh_current_room() -> void:
 		current_room_instance.refresh()
 
 #TESTING CODE FOR ENEMIES
+var enemies_alive: int = 0
 func spawn_enemies(room: RoomData, count: int) -> void:
 	var room_size = get_room_bounds() 
 	
@@ -168,6 +172,8 @@ func spawn_enemies(room: RoomData, count: int) -> void:
 		var enemy = RANGED_ENEMY.instantiate()
 		current_room_instance.add_child(enemy)
 		enemy.global_position = _random_spawn_position(room_size)
+		enemy.tree_exited.connect(_on_enemy_died)
+		enemies_alive += 1
 
 func _random_spawn_position(bounds: Rect2) -> Vector2:
 	const MIN_DIST_FROM_PLAYER = 150.0
@@ -187,5 +193,18 @@ func _random_spawn_position(bounds: Rect2) -> Vector2:
 	# Fallback if no valid position found after 20 tries
 	return bounds.get_center()
 
+func _on_enemy_died() -> void:
+	enemies_alive -= 1
+	if enemies_alive <= 0:
+		clear_current_room()
+		
 func get_room_bounds() -> Rect2:
 	return Rect2(0, 0, 1280, 720)
+	
+func _show_victory() -> void:
+	for bullet in get_tree().get_nodes_in_group("bullets"):
+		bullet.queue_free()
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		enemy.queue_free()
+	get_tree().paused = true
+	get_tree().change_scene_to_file("res://scenes/victory.tscn")

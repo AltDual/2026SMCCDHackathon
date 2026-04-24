@@ -77,6 +77,8 @@ func process_weapon_switching() -> void:
 		equip_weapon(1) # 1 is the second array slot (Pistol)
 
 func equip_weapon(index: int) -> void:
+	if has_sniper:
+		return
 	if weapon_inventory[index] != null:
 		active_weapon_index = index
 		gun.equip(weapon_inventory[index])

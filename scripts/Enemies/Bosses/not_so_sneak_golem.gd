@@ -15,7 +15,7 @@ var summon_interval: float = 8.0
 
 # Evasion speeds
 const NORMAL_SPEED: float = 60.0
-const EVADE_SPEED: float = 280.0
+const EVADE_SPEED: float = 200.0
 
 func on_ready() -> void:
 	max_health = 9999
