@@ -26,4 +26,7 @@ Firstly, we were all new to Godot, so we had to learn how to use it in the first
 - The importance of not overscoping! We initially planned a weapon progression system with weapon combos, but did not have enough time.
 ## What's next for FourShot
 Due to the scalability of the weapon and enemy systems, it is easy to add more content. We had originally planned for weapons like a flamethrower, a fireball spell, and a shotgun. Other content to be added is long corridor rooms, more obstacles and structures in the rooms, and more visual effects. Even later in the future is a new floor with new enemies, weapons, and bosses, along with new starting characters/weapons. 
-
+## How to View Project in Godot
+- Download the latest version of Godot https://godotengine.org/
+- Clone this repository and open the file in Godot
+- Or download one of the builds from Releases
