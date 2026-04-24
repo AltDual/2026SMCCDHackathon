@@ -1,6 +1,8 @@
 # FourShot
 by Taiki Shinokawa, Michael Chen, Braden Chiu
 
+<img width="1918" height="1076" alt="Screenshot 2026-04-24 013607" src="https://github.com/user-attachments/assets/ee68b441-fd73-48ec-9879-91a51c1c0b35" />
+
 # About
 
 ## Inspiration
