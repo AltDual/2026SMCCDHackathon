@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://beucb83thtgqr"]
 
 [ext_resource type="PackedScene" uid="uid://dkxndoobbicx5" path="res://scenes/ranged_enemy.tscn" id="1_g0nlc"]
-[ext_resource type="Script" path="res://scripts/Enemies/elite_slime_enemy.gd" id="2_g0nlc"]
+[ext_resource type="Script" uid="uid://c4ngxh0lj2sx8" path="res://scripts/Enemies/elite_slime_enemy.gd" id="2_g0nlc"]
 [ext_resource type="Texture2D" uid="uid://dcdco4uno0hhm" path="res://assets/images/Enemies/slime.png" id="3_7w3vg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rs3ab"]
@@ -107,4 +107,6 @@ sprite_frames = SubResource("SpriteFrames_7w3vg")
 animation = &"idle"
 
 [node name="CollisionShape2D" parent="." index="3" unique_id=829269521]
+position = Vector2(0, 5)
+scale = Vector2(2.5, 2.5)
 shape = SubResource("CircleShape2D_k8phd")
