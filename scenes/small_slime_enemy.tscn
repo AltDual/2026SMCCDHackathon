@@ -44,7 +44,7 @@ region = Rect2(128, 96, 32, 32)
 atlas = ExtResource("3_ytdci")
 region = Rect2(160, 96, 32, 32)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_b1bll"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_ytdci"]
 resource_local_to_scene = true
 animations = [{
 "frames": [{
@@ -88,15 +88,16 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_tpghe"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_b1bll"]
 resource_local_to_scene = true
 radius = 8.0
 
 [node name="Small_Slime_Enemy" unique_id=688229520 instance=ExtResource("1_8ywrb")]
 script = ExtResource("2_oq1ga")
+bullet_speed = 400.0
 
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=2058940189]
-sprite_frames = SubResource("SpriteFrames_b1bll")
+sprite_frames = SubResource("SpriteFrames_ytdci")
 
 [node name="CollisionShape2D" parent="." index="3" unique_id=829269521]
-shape = SubResource("CircleShape2D_tpghe")
+shape = SubResource("CircleShape2D_b1bll")
