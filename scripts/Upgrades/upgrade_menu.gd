@@ -23,9 +23,13 @@ func show_upgrades(upgrades: Array[UpgradeResource]) -> void:
 		vbox.get_node("Description").text = upgrade.description
 		if upgrade.icon:
 			vbox.get_node("Icon").texture = upgrade.icon
-		card.pressed.connect(_on_card_pressed.bind(i), CONNECT_ONE_SHOT)
+		card.disabled = true
 	visible = true
 	get_tree().paused = true
+	await get_tree().create_timer(0.5, true).timeout
+	for card in cards:
+		card.disabled = false
+		card.pressed.connect(_on_card_pressed.bind(cards.find(card)), CONNECT_ONE_SHOT)
 
 func _on_card_pressed(index: int) -> void:
 	get_tree().paused = false

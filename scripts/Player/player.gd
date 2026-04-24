@@ -117,12 +117,19 @@ func _die() -> void:
 	is_dead = true
 	set_physics_process(false)  # stop movement
 	gun.can_fire = false         # stop shooting
-
+	
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		enemy.queue_free()
+	for bullet in get_tree().get_nodes_in_group("bullets"):
+		bullet.queue_free()
+	get_tree().paused = true
+	
 	if animated_sprite_2d.sprite_frames.has_animation("dying"):
 		animated_sprite_2d.play("dying")
 		await animated_sprite_2d.animation_finished
+		await get_tree().create_timer(0.5).timeout
 
-	#get_tree().change_scene_to_file("res://scenes/game_over.tscn")
+	get_tree().change_scene_to_file("res://scenes/game_over.tscn")
 
 #XP
 func gain_xp(amount: int):

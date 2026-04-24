@@ -7,6 +7,7 @@ var start_position: Vector2
 
 #TODO: Get Rid of debug messages when done
 func setup(p_damage: int, p_speed: float, p_range: float) -> void:
+	add_to_group("bullets")
 	damage = p_damage
 	speed = p_speed
 	max_distance = p_range
