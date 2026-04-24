@@ -4,6 +4,7 @@ const ROOM_RUNTIME_SCENE := preload("res://scenes/room-main.tscn")
 const ROOM_TRANSITION_COOLDOWN := 0.35
 
 const SMALL_SLIME_ENEMY = preload("res://scenes/small_slime_enemy.tscn")
+const ELITE_SLIME_ENEMY = preload("res://scenes/elite_slime_enemy.tscn")
 
 @onready var dungeon = $DungeonGenerator
 @onready var room_view: Node2D = $RoomView
@@ -154,7 +155,14 @@ func spawn_enemies(room: RoomData, count: int) -> void:
 	var room_size = get_room_bounds() 
 	
 	for i in range(count):
-		var enemy = SMALL_SLIME_ENEMY.instantiate()
+		var enemy
+		
+		# 25% chance to spawn an Elite Slime
+		if randf() <= 0.25:
+			enemy = ELITE_SLIME_ENEMY.instantiate()
+		else:
+			enemy = SMALL_SLIME_ENEMY.instantiate()
+			
 		current_room_instance.add_child(enemy)
 		enemy.global_position = _random_spawn_position(room_size)
 		enemy.tree_exited.connect(_on_enemy_died)
@@ -182,5 +190,6 @@ func _on_enemy_died() -> void:
 	enemies_alive -= 1
 	if enemies_alive <= 0:
 		clear_current_room()
+
 func get_room_bounds() -> Rect2:
 	return Rect2(0, 0, 1280, 720)
