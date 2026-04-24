@@ -43,10 +43,10 @@ script = ExtResource("3_4evpv")
 [node name="Minimap" type="Control" parent="MapCanvasLayer" unique_id=1148058006]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 20.0
-offset_top = 40.0
-offset_right = 173.0
-offset_bottom = 126.0
+offset_left = 467.0
+offset_top = 20.0
+offset_right = 620.0
+offset_bottom = 106.0
 script = ExtResource("6_8lwq6")
 
 [node name="BossMusic" type="AudioStreamPlayer" parent="." unique_id=109651757]
