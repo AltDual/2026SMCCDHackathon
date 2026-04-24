@@ -18,6 +18,8 @@ var current_ammo: int = 0
 var fire_cooldown: float = 0.0 
 
 func _process(delta: float) -> void:
+	if get_tree().paused:
+		return
 	if weapon_data == null: return
 	
 	look_at(get_global_mouse_position())

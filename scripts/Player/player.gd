@@ -53,6 +53,10 @@ func _ready():
 	SignalBus.level_changed.connect(_on_level_up)
 
 func _physics_process(_delta: float) -> void:
+	if get_tree().paused:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
 	var _move_input := Input.get_vector("left", "right", "up", "down")
 	process_movement()
 
