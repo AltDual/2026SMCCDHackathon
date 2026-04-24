@@ -9,6 +9,7 @@ weapon_name = "HK-67"
 damage = 25
 fire_rate = 0.15
 bullet_speed = 600.0
+bullet_range = 210.0
 reload_time = 0.6
 pattern = "single"
 spread_angle = 5.0

@@ -78,6 +78,8 @@ func _summon_mini_golems() -> void:
 		mini.tree_exited.connect(_on_mini_golem_killed)
 
 func _on_mini_golem_killed() -> void:
+	if is_dead:
+		return 
 	mini_golems_killed += 1
 	SignalBus.boss_progress.emit(mini_golems_killed, mini_golems_needed)
 	if mini_golems_killed >= mini_golems_needed and not mini_boss_alive:
@@ -88,7 +90,8 @@ func _spawn_mini_boss() -> void:
 	mini_boss_alive = true
 	var mini_boss = MINI_BOSS_GOLEM.instantiate()
 	get_parent().add_child(mini_boss)
-	mini_boss.global_position = global_position + Vector2(200, 0)
+	var bounds = Rect2(80, 80, 1100, 560)
+	mini_boss.global_position = _random_pos(bounds)
 	mini_boss.boss = self
 	mini_boss.tree_exited.connect(_on_mini_boss_killed)
 
@@ -98,6 +101,9 @@ func _on_mini_boss_killed() -> void:
 	_spawn_sniper_pickup()
 
 func _spawn_sniper_pickup() -> void:
+	var parent = get_parent()
+	if not is_inside_tree() or parent == null:
+		return
 	var pickup = SNIPER_PICKUP.instantiate()
 	get_parent().add_child(pickup)
 	pickup.global_position = global_position + Vector2(0, 100)
